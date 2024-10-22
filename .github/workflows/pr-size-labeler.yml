@@ -15,9 +15,10 @@ jobs:
       - name: Get PR size
         id: pr_size
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | wc -l)
           CHANGED_LINES=$(git diff --numstat ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | awk '{add += $1 + $2} END {print add}')
-          echo "changed_files=$CHANGED_FILES" >> $GITHUB_ENV
+          if [ -z "$CHANGED_LINES" ]; then
+            CHANGED_LINES=0
+          fi
           echo "changed_lines=$CHANGED_LINES" >> $GITHUB_ENV
 
       - name: Set size label
