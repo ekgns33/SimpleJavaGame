@@ -2,10 +2,7 @@ package org.kunp;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
-import java.util.Objects;
 
 public class MapPanel extends JPanel {
     private static final int MAP_SIZE = 500;
@@ -22,29 +19,7 @@ public class MapPanel extends JPanel {
         setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         setFocusable(true);
         initializePortals();
-        portalImage = new ImageIcon(Objects.requireNonNull(getClass().getResource("/portal.png"))).getImage();
-
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                Player player = players.getFirst(); // 현재는 첫 번째 플레이어만 제어
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                        player.move(0, -CELL_SIZE);
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        player.move(0, CELL_SIZE);
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        player.move(-CELL_SIZE, 0);
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        player.move(CELL_SIZE, 0);
-                        break;
-                }
-                repaint();
-            }
-        });
+        portalImage = new ImageIcon(getClass().getResource("/portal.png")).getImage();
     }
 
     private void initializePortals() {
@@ -70,13 +45,13 @@ public class MapPanel extends JPanel {
     }
 
     private void drawMap(Graphics g) {
-        g.setColor(new Color(200, 200, 200));
+        g.setColor(new Color(200, 200, 200)); // 격자 색을 약간 연하게 수정
         for (int i = 0; i < MAP_SIZE; i += CELL_SIZE) {
             for (int j = 0; j < MAP_SIZE; j += CELL_SIZE) {
                 g.drawRect(i, j, CELL_SIZE, CELL_SIZE);
             }
         }
-
+        // 포탈 그리기
         for (Rectangle portal : portals) {
             if (portal != null) {
                 g.drawImage(portalImage, portal.x, portal.y, portal.width, portal.height, null);
@@ -91,7 +66,7 @@ public class MapPanel extends JPanel {
     }
 
     public int isPortal(int x, int y) {
-        for (int i = 0; i < portals.length; i++) {
+        for(int i=0; i<portals.length; i++) {
             if (portals[i] != null && portals[i].contains(x, y)) {
                 return i;
             }
@@ -99,3 +74,5 @@ public class MapPanel extends JPanel {
         return -1;
     }
 }
+
+
