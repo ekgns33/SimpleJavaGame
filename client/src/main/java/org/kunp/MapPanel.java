@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Objects;
+import java.util.*;
 
 public class MapPanel extends JPanel {
     private static final int MAP_SIZE = 500;
@@ -13,11 +13,16 @@ public class MapPanel extends JPanel {
     private Rectangle[] portals;
     private Image portalImage;
     private Player player;
+    private Image image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/tagger.png"))).getImage();
+    private static final int IMAGE_SIZE_X = 30;
+    private static final int IMAGE_SIZE_Y = 50;
+    private HashMap<String, Location> locations = null;
 
-    public MapPanel(int mapX, int mapY, Player player) {
+    public MapPanel(int mapX, int mapY, Player player, HashMap<String, Location> locations) {
         this.mapX = mapX;
         this.mapY = mapY;
         this.player = player;
+        this.locations = locations;
         setPreferredSize(new Dimension(MAP_SIZE, MAP_SIZE));
         setFocusable(true);
         initializePortals();
@@ -40,7 +45,7 @@ public class MapPanel extends JPanel {
                         player.move(CELL_SIZE, 0);
                         break;
                 }
-                repaint();
+                //repaint();
             }
         });
     }
@@ -65,6 +70,7 @@ public class MapPanel extends JPanel {
         super.paintComponent(g);
         drawMap(g);
         drawPlayer(g);
+        drawCoMapUsers(g);
     }
 
     private void drawMap(Graphics g) {
@@ -86,9 +92,23 @@ public class MapPanel extends JPanel {
         player.draw(g);
     }
 
+    private void drawCoMapUsers(Graphics g) {
+        synchronized (locations) {
+            Collection collection = locations.values();
+            Iterator iter = collection.iterator();
+            while(iter.hasNext()){
+                Location loc = (Location) iter.next();
+                if(loc.getRoomNumber() == mapY * 3 + mapX + 1){
+                    g.drawImage(image, loc.getX(), loc.getY(), IMAGE_SIZE_X, IMAGE_SIZE_Y, null);
+                }
+            }
+        }
+    }
+
     public int isPortal(int x, int y) {
+        Rectangle portalRange = new Rectangle(x, y, 1, IMAGE_SIZE_Y);
         for (int i = 0; i < portals.length; i++) {
-            if (portals[i] != null && portals[i].contains(x, y)) {
+            if (portals[i] != null && portals[i].intersects(portalRange)) {
                 return i;
             }
         }

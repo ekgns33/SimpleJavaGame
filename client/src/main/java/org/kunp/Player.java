@@ -28,31 +28,24 @@ public class Player {
     public int getX() {
         return x;
     }
-
     public int getY() {
         return y;
     }
-
     public int getImageSizeX() {
         return IMAGE_SIZE_X;
     }
-
     public int getImageSizeY() {
         return IMAGE_SIZE_Y;
     }
-
     public String getRole() {
         return role;
     }
-
     public String getSessionId() {
         return sessionId;
     }
-
     public int getRoomNumber() {
         return roomNumber;
     }
-
     public void setRoomNumber(int roomNumber) {
         this.roomNumber = roomNumber;
     }

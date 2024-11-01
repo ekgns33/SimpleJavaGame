@@ -13,14 +13,15 @@ public class Client {
     private String sessionId;
     private Player player;
 
-    public Client() {
+    public Client(String TempSessionId) {
         try {
             socket = new Socket(SERVER_HOST, SERVER_PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            sessionId = TempSessionId;
 
             // 서버로부터 세션 ID 받음 -> 24.11.01 3시 기준 서버 구현 미완료로 현재 에러 발생
-            sessionId = in.readLine();
+            // sessionId = in.readLine();
             System.out.println("Connected with session ID: " + sessionId);
         } catch (IOException e) {
             e.printStackTrace();
@@ -31,7 +32,7 @@ public class Client {
 
         JFrame frame = new JFrame("Tag Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Map map = new Map(out, player, sessionId);
+        Map map = new Map(in, out, player, sessionId);
         frame.add(map);
         frame.pack();
         frame.setVisible(true);
