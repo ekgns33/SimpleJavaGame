@@ -20,11 +20,13 @@ public class Main {
   private static ISessionIdGenerator sessionIdGenerator;
   private static SessionManager sessionManager;
   private static ConnectionConfigurer connectionConfigurer;
+  private static final Map<String, Session> clientSessions = new ConcurrentHashMap<>();
+
 
   public static void main(String[] args) {
     initDependencies();
     Thread reactorThread =
-        startReactor().orElseThrow(() -> new RuntimeException("Failed to start reactor thread"));
+            startReactor().orElseThrow(() -> new RuntimeException("Failed to start reactor thread"));
     startMonitorThread();
 
     try {
@@ -97,3 +99,4 @@ public class Main {
     }
   }
 }
+
