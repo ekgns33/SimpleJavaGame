@@ -6,6 +6,7 @@ public class SessionManager {
 
   private final SessionStorage sessionStorage;
   private final ISessionIdGenerator sessionIdGenerator;
+  private static final Map<String, Session> clientSessions = new ConcurrentHashMap<>();
 
   public SessionManager(SessionStorage sessionStorage, ISessionIdGenerator sessionIdGenerator) {
     this.sessionStorage = sessionStorage;
