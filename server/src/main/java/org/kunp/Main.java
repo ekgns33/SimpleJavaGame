@@ -21,10 +21,11 @@ public class Main {
   private static SessionManager sessionManager;
   private static ConnectionConfigurer connectionConfigurer;
 
+
   public static void main(String[] args) {
     initDependencies();
     Thread reactorThread =
-        startReactor().orElseThrow(() -> new RuntimeException("Failed to start reactor thread"));
+            startReactor().orElseThrow(() -> new RuntimeException("Failed to start reactor thread"));
     startMonitorThread();
 
     try {
@@ -97,3 +98,4 @@ public class Main {
     }
   }
 }
+
