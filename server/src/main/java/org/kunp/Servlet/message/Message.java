@@ -1,59 +1,60 @@
 package org.kunp.Servlet.message;
 
 import java.io.Serializable;
+import import java.util.HashMap;
 
-public class Message implements Serializable {
-  private final int type; // 1. 움직임, 2. 상호작용
-  private final int id;
-  private final int x;
-  private int y;
-  private int roomNumber;
+public class Message {
+  private String type;            // 메시지 타입
+  private String sessionId;       // 세션 ID
+  private HashMap<String, String> content; // 타입에 따른 유동적인 파라미터
 
-  public Message(int type, int id, int x, int y, int roomNumber) {
+  public Message(String type, String sessionId, HashMap<String, String> content) {
     this.type = type;
-    this.id = id;
-    this.x = x;
-    this.y = y;
-    this.roomNumber = roomNumber;
+    this.sessionId = sessionId;
+    this.content = content;
   }
 
-  /***
-   * parsing String message to Message obj
-   * @param message String
-   * @return Message
-   */
+  // 메시지를 파싱하여 Message 객체로 변환하는 정적 메서드
   public static Message parse(String message) {
-    String[] tokens = message.split("\\|");
-    return new Message(
-        Integer.parseInt(tokens[0]),
-        Integer.parseInt(tokens[1]),
-        Integer.parseInt(tokens[2]),
-        Integer.parseInt(tokens[3]),
-        Integer.parseInt(tokens[4]));
+    String[] parts = message.split("\\|");
+
+    // type과 sessionId를 항상 포함한다고 가정
+    String type = parts[0];
+    String sessionId = parts[1];
+
+    HashMap<String, String> content = new HashMap<>();
+
+    // 나머지 파라미터는 content로 취급하여 key=value 형식으로 저장
+    for (int i = 2; i < parts.length; i++) {
+      String[] keyValue = parts[i].split("=");
+      if (keyValue.length == 2) {
+        content.put(keyValue[0], keyValue[1]);
+      }
+    }
+
+    return new Message(type, sessionId, content);
   }
 
-  public int getType() {
+  // Getters
+  public String getType() {
     return type;
   }
 
-  public int getY() {
-    return y;
+  public String getSessionId() {
+    return sessionId;
   }
 
-  public void setY(int y) {
-    this.y = y;
+  public HashMap<String, String> getContent() {
+    return content;
   }
 
-  public int getRoomNumber() {
-    return roomNumber;
-  }
-
-  public void setRoomNumber(int roomNumber) {
-    this.roomNumber = roomNumber;
-  }
-
+  // 디버깅을 위한 toString 메서드
   @Override
   public String toString() {
-    return String.format("%d|%d|%d|%d|%d", type, id, x, y, roomNumber);
+    return "Message{" +
+            "type='" + type + '\'' +
+            ", sessionId='" + sessionId + '\'' +
+            ", content=" + content +
+            '}';
   }
 }
