@@ -3,7 +3,6 @@ package org.kunp.Servlet.menu;
 import org.kunp.Servlet.session.Session;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class WaitingRoomRegistry {
   // 대기방 조회
   String getWaitingRooms() {
     return waitingRooms.values().stream()
-        .filter(WaitingRoomContext::isClosed)
+        .filter(WaitingRoomContext::isOpen)
         .map(WaitingRoomContext::getRoomName)
         .collect(Collectors.joining(","));
   }
@@ -36,7 +35,7 @@ public class WaitingRoomRegistry {
   void enterWaitingRoom(Session session, String roomName, int userLimit, int timeLimit) throws IOException {
     waitingRooms.putIfAbsent(roomName, new WaitingRoomContext(roomName, session.getSessionId(), userLimit, timeLimit));
     WaitingRoomContext waitingRoom = waitingRooms.get(roomName);
-    if (waitingRoom.isClosed() || waitingRoom.isFull()) {
+    if (!waitingRoom.isOpen() || waitingRoom.isFull()) {
       return;
     }
     waitingRoom.enter(session);

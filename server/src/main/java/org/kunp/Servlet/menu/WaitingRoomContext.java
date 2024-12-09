@@ -98,7 +98,7 @@ public class WaitingRoomContext {
     return hostId.equals(sessionId);
   }
 
-  public boolean isClosed() {
+  public boolean isOpen() {
     return exposeLevel;
   }
 
