@@ -21,5 +21,6 @@ public class GameThread implements Runnable{
               System.out.println(e);
           }
       }
+      Thread.currentThread().interrupt();
   }
 }

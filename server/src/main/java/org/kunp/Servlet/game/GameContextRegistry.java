@@ -16,7 +16,7 @@ public class GameContextRegistry {
   private static GameContextRegistry registry;
   private AtomicInteger gameId = new AtomicInteger(1);
   private final Map<Integer, GameContext> gameContexts = new ConcurrentHashMap<>();
-  private final ExecutorService gameThreadPool = Executors.newFixedThreadPool(5);
+  private final ExecutorService gameThreadPool = Executors.newCachedThreadPool();
 
   // Singleton Method
   public static GameContextRegistry getInstance() {

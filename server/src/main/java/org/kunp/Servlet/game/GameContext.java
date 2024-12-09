@@ -156,7 +156,6 @@ public class GameContext {
       try {
         unicastEntireClientPositions(participant.getValue());
       } catch (IOException e) {
-        e.printStackTrace(System.out);
         cancelList.add(participant.getKey());
       }
     }
@@ -169,7 +168,6 @@ public class GameContext {
         entry.getValue().flush();
       } catch (IOException e) {
         cancelList.add(entry.getKey());
-        throw new RuntimeException(e);
       }
     }
   }
@@ -331,16 +329,21 @@ public class GameContext {
     } else {
       boolean allRunnersCaptured = true;
       // 술래가 모든 도망자를 잡았는지 확인
+      int chaserN = 0;
       for (Map.Entry<String, Boolean> entry : playerStates.entrySet()) {
         String playerId = entry.getKey();
-
+        if(!isRunner(playerId)) chaserN++;
         // 플레이어가 도망자인지 확인하고 잡혔는지 검사
         if (isRunner(playerId) && !isPlayerDisabled(entry.getKey())) {
           // 잡히지 않은 도망자가 있는 경우
           allRunnersCaptured = false;
           //log.info(format("gameId : %d | Runner %s is not captured yet.", this.gameId, playerId));
-          break; // 추가 검사 불필요, 즉시 탈출
         }
+      }
+      if(chaserN == 0) {
+        // 술래가 없는 경우, 도망자 승리
+        broadcastGameResult(false);
+        log.info(format("gameId : %d | No chasers. Runners win.", this.gameId));
       }
       if (allRunnersCaptured) {
         // 모든 도망자가 잡혔으면 술래가 승리

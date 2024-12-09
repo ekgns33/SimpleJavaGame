@@ -34,6 +34,11 @@ public class WaitingRoomContext {
     this.timeLimit = timeLimit;
   }
 
+  private void disconnectParticipants() {
+    cancelList.forEach(this::leave);
+    cancelList.clear();
+  }
+
   // 110번: 입장 메세지
   public synchronized void enter(Session session) throws IOException {
 
@@ -43,12 +48,11 @@ public class WaitingRoomContext {
 
     OutputStream ops = (OutputStream) session.getAttributes().get("ops");
     participants.put(session.getSessionId(), ops);
-
     // Broadcast to all participants
     for (Map.Entry<String, OutputStream> entry : participants.entrySet()) {
       broadCast("110|%s|%s|content|time\n".formatted(entry.getKey(), roomName));
     }
-
+    disconnectParticipants();
     // Send updated participant list to the new user
     ops.write("110|%s|%s|content|time\n".formatted(String.join(",", participants.keySet()), roomName).getBytes());
     ops.flush();
@@ -71,8 +75,6 @@ public class WaitingRoomContext {
   }
 
   public void broadCast(String message) {
-    cancelList.forEach(participants::remove);
-    cancelList.clear();
     for (Map.Entry<String, OutputStream> entry : participants.entrySet()) {
       try {
         OutputStream oos = entry.getValue();
@@ -86,6 +88,10 @@ public class WaitingRoomContext {
         cancelList.add(entry.getKey());
       }
     }
+  }
+
+  public boolean isFull() {
+    return participants.size() >= userLimit;
   }
 
   public boolean isHost(String sessionId) {
@@ -119,6 +125,15 @@ public class WaitingRoomContext {
   // 게임 초기화
   public void initGame(Session session) {
     boolean allParticipants = true;
+    disconnectParticipants();
+    if(!hostId.equals(session.getSessionId())) {
+      return;
+    }
+
+    if (participants.size() < 2) {
+      return;
+    }
+
     for(Map.Entry<String, OutputStream> entry : participants.entrySet()) {
       if(SessionManager.getInstance().getSession(entry.getKey()) == null) {
         cancelList.add(entry.getKey());
@@ -138,6 +153,7 @@ public class WaitingRoomContext {
   public void endGame() {
     this.exposeLevel = true;
     GameContextRegistry.getInstance().endGame(gameId);
+    disconnectParticipants();
     // Broadcast to all participants
     for (Map.Entry<String, OutputStream> entry : participants.entrySet()) {
       broadCast("110|%s|%s|content|time\n".formatted(String.join(",", participants.keySet()), roomName));

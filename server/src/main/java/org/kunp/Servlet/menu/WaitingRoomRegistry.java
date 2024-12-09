@@ -36,6 +36,9 @@ public class WaitingRoomRegistry {
   void enterWaitingRoom(Session session, String roomName, int userLimit, int timeLimit) throws IOException {
     waitingRooms.putIfAbsent(roomName, new WaitingRoomContext(roomName, session.getSessionId(), userLimit, timeLimit));
     WaitingRoomContext waitingRoom = waitingRooms.get(roomName);
+    if (waitingRoom.isClosed() || waitingRoom.isFull()) {
+      return;
+    }
     waitingRoom.enter(session);
   }
 
@@ -56,9 +59,7 @@ public class WaitingRoomRegistry {
   }
 
   public void startGame(Session session, String roomName, int userLimit, int timeLimit) {
-    if(!waitingRooms.get(roomName).isHost(session.getSessionId())) {
-      return;
-    }
+
     waitingRooms.get(roomName).initGame(session);
   }
 
