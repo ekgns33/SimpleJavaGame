@@ -266,6 +266,7 @@ public class GameContext {
   }
 
   private void updateClientPosition(String sessionId, int x, int y, int roomId, int role) {
+
     this.positions.putIfAbsent(sessionId, new int[4]);
     this.positions.get(sessionId)[0] = x;
     this.positions.get(sessionId)[1] = y;
@@ -363,7 +364,7 @@ public class GameContext {
 
   private void startTimer() {
     LocalDateTime startTime = LocalDateTime.now();  // 게임 시작 시간 기록
-    endTime = startTime.plusMinutes(timeLimit);  // 게임 종료 시간 계산
+    endTime = startTime.plusSeconds(timeLimit*10);  // 게임 종료 시간 계산
   }
 
   // 타임아웃 체크
