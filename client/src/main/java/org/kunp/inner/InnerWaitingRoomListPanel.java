@@ -21,20 +21,20 @@ public class InnerWaitingRoomListPanel extends JPanel {
 
     public void updateSessionList(Set<String> sessionIds) {
         gridPanel.removeAll();
+        synchronized (sessionIds) {
+            for (String id : sessionIds) {
+                JPanel userPanel = new JPanel();
+                userPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                userPanel.setLayout(new GridBagLayout());
 
-        for (String id : sessionIds) {
-            JPanel userPanel = new JPanel();
-            userPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            userPanel.setLayout(new GridBagLayout());
+                JLabel label = new JLabel(id);
+                label.setFont(new Font("Arial", Font.BOLD, 16));
+                label.setHorizontalAlignment(SwingConstants.CENTER);
 
-            JLabel label = new JLabel(id);
-            label.setFont(new Font("Arial", Font.BOLD, 16));
-            label.setHorizontalAlignment(SwingConstants.CENTER);
-
-            userPanel.add(label);
-            gridPanel.add(userPanel);
+                userPanel.add(label);
+                gridPanel.add(userPanel);
+            }
         }
-
         gridPanel.revalidate();
         gridPanel.repaint();
     }
