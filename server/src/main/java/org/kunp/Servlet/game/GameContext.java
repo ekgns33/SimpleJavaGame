@@ -174,8 +174,12 @@ public class GameContext {
 
   private void unicastEntireClientPositions(OutputStream oos) throws IOException {
     for (Map.Entry<String, int[]> entry : positions.entrySet()) {
-      oos.write(createPositionUpdateMessage(entry.getValue(), entry.getKey(), this.gameId).getBytes());
-      oos.flush();
+      try{
+        oos.write(createPositionUpdateMessage(entry.getValue(), entry.getKey(), this.gameId).getBytes());
+        oos.flush();
+      } catch (IOException e) {
+        cancelList.add(entry.getKey());
+      }
     }
   }
 
