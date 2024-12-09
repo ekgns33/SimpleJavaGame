@@ -9,11 +9,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ResultComponent extends JPanel {
     public ResultComponent(StateManager stateManager, ServerCommunicator serverCommunicator, 
-                         ScreenManager screenManager, String gameResult, String roomName, BufferedReader in, PrintWriter out, Set<String> sessionIds) {
+                         ScreenManager screenManager, String gameResult, String roomName, BufferedReader in, PrintWriter out, CopyOnWriteArraySet<String> sessionIds) {
 
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(500, 500));

@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class MapComponent extends JPanel {
     private MapComponentPanel[][] maps;
@@ -22,7 +23,7 @@ public class MapComponent extends JPanel {
     private final HashMap<String, Location> locations = new HashMap<>();
     private final int gameId;
 
-    public MapComponent(StateManager stateManager, ServerCommunicator serverCommunicator, ScreenManager screenManager, PlayerComponent player, String sessionId, BufferedReader in, PrintWriter out, int gameId, String roomName, Set<String> sessionIds) {
+    public MapComponent(StateManager stateManager, ServerCommunicator serverCommunicator, ScreenManager screenManager, PlayerComponent player, String sessionId, BufferedReader in, PrintWriter out, int gameId, String roomName, CopyOnWriteArraySet<String> sessionIds) {
         this.player = player;
         this.sessionId = sessionId;
         this.gameId = gameId;
