@@ -10,16 +10,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.Set;
-
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class InnerWaitingRoomComponent extends JPanel {
   public InnerWaitingRoomComponent(StateManager stateManager, ServerCommunicator serverCommunicator, ScreenManager screenManager, String roomName, BufferedReader in, PrintWriter out) {
-    this(stateManager, serverCommunicator, screenManager, roomName, in, out, new HashSet<>());
+    this(stateManager, serverCommunicator, screenManager, roomName, in, out, new CopyOnWriteArraySet<>());
   }
 
-  public InnerWaitingRoomComponent(StateManager stateManager, ServerCommunicator serverCommunicator, ScreenManager screenManager, String roomName, BufferedReader in, PrintWriter out, Set<String> existingSessionIds) {
+  public InnerWaitingRoomComponent(StateManager stateManager, ServerCommunicator serverCommunicator, ScreenManager screenManager,
+                                   String roomName, BufferedReader in, PrintWriter out, CopyOnWriteArraySet<String> existingSessionIds) {
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createLineBorder(Color.GRAY));
     setPreferredSize(new Dimension(350, 200));
@@ -40,10 +40,8 @@ public class InnerWaitingRoomComponent extends JPanel {
     stateManager.addMessageListener(listener);
   }
 
-  private void handleServerMessage(String message, Set<String> sessionIds, InnerWaitingRoomListPanel listPanel, BufferedReader in, PrintWriter out, StateManager stateManager,  ServerCommunicator serverCommunicator, ScreenManager screenManager, String roomName) {
+  private void handleServerMessage(String message, CopyOnWriteArraySet<String> sessionIds, InnerWaitingRoomListPanel listPanel, BufferedReader in, PrintWriter out, StateManager stateManager,  ServerCommunicator serverCommunicator, ScreenManager screenManager, String roomName) {
     String[] tokens = message.split("\\|");
-    System.out.println(message);
-
     if (tokens.length > 1) {
       String type = tokens[0];
         switch (type) {
