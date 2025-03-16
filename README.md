@@ -48,3 +48,5 @@ This project uses **Java Swing** for the GUI components. No additional setup is 
 - Game ends when time runs out. If the runner is still free, the runner wins
 ## Contents
 
+- Playing Video
+https://youtu.be/cfOhrYJq5Q4
